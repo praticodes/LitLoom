@@ -1,2 +1,2 @@
-# TrailBlaze
-A web application that optimizes your travel itinerary. 
+# LitLoom
+An app to weave together your book club's reading tastes.
