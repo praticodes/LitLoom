@@ -1,7 +1,6 @@
 """This file contains the functions used to scrape publicly available data from various sites, in order
 to create Books, a custom class.
 """
-
 import bs4
 from bs4 import BeautifulSoup
 import requests
@@ -87,10 +86,13 @@ def new_book(book_link: str) -> Book:
 
 def create_book_list(book_links: list[str]) -> list[Book]:
     """Returns a list of all the books referred to by links in a list of book links
+    >>> book_links = ['https://www.goodreads.com/book/show/61884987-hello-stranger', 'https://www.goodreads.com/book/show/59651557-under-one-roof', 'https://www.goodreads.com/book/show/58293924-book-of-night', 'https://www.goodreads.com/book/show/59345253-something-wilder']
+    >>> create_book_list(book_links)
     """
     books = []
     for book_link in book_links:
-        books.append(new_book(book_link))
+        book = new_book(book_link)
+        books.append(book)
 
     return books
 
@@ -99,6 +101,7 @@ def generate_recently_published_books() -> list[Book]:
     """Returns a list of books that were published this year or last year
     """
     urls = generate_popular_by_date_urls()
+    print(urls)
     book_links = get_book_links(urls)
     return create_book_list(book_links)
 
@@ -125,13 +128,40 @@ def get_book_soup(book_link: str) -> bs4.BeautifulSoup:
     return BeautifulSoup(html_content, 'html.parser')
 
 
+def get_book_title(url) -> str:
+    """
+    Returns a book's title from its url
+    """
+    parts = url.split('/')
+    last_part_section = url.split('-')[1:]
+    title = ''
+    for part in last_part_section:
+        title += part.capitalize()
+        title += ''
+    return title
+
+
 def get_title(book_soup: bs4.BeautifulSoup) -> str:
     """Returns the title of the book referred to by its book_soup.
-    >>> get_title(get_book_soup("https://www.goodreads.com/book/show/61884987-hello-stranger"))
-    'Hello Stranger'
+    >>> get_title(get_book_soup("https://www.goodreads.com/book/show/61169384-playing-hard-to-get"))
+    'Playing Hard to Get'
+    >>> get_title(get_book_soup("https://www.goodreads.com/book/show/60495147-nine-liars"))
+    'Nine Liars'
+    >>> get_title(get_book_soup("https://www.goodreads.com/book/show/60316881-the-headmaster-s-list"))
+    "The Headmaster's List"
+    >>> get_title(get_book_soup("https://www.goodreads.com/book/show/61398911-girl-forgotten"))
+    'Girl Forgotten'
     """
-    title = book_soup.find('h1', class_='Text Text__title1')
-    return title.get_text()
+    # Find the div with class "BookPageTitleSection"
+    title_div = book_soup.find("div", class_="BookPageTitleSection")
+    if title_div is not None:
+        title = title_div.get_text()
+        if '#' not in title_div.get_text():
+            return title
+        else:
+            return title.split('#')[1][1:]
+    else:
+        return " "
 
 
 def get_author(book_soup: bs4.BeautifulSoup) -> str:
@@ -139,7 +169,11 @@ def get_author(book_soup: bs4.BeautifulSoup) -> str:
     >>> get_author(get_book_soup("https://www.goodreads.com/book/show/61884987-hello-stranger"))
     'Katherine Center'
     """
-    return book_soup.find('span', class_="ContributorLink__name").get_text()
+    value = book_soup.find('span', class_="ContributorLink__name")
+    if value is not None:
+        return value.get_text()
+    else:
+        return ''
 
 
 def get_genres(book_soup: bs4.BeautifulSoup) -> list[str]:
@@ -158,10 +192,14 @@ def get_genres(book_soup: bs4.BeautifulSoup) -> list[str]:
 def get_rating(book_soup: bs4.BeautifulSoup) -> float:
     """Returns the rating of a book using its link's soup.
     >>> get_rating(get_book_soup("https://www.goodreads.com/book/show/61884987-hello-stranger"))
-    4.1
+    4.09
     """
-    rating = float(book_soup.find('div', class_='RatingStatistics__rating').get_text())
-    return rating
+    value = book_soup.find('div', class_='RatingStatistics__rating')
+    if value is not None:
+        rating = float(value.get_text())
+        return rating
+    else:
+        return 0.0
 
 
 def get_rating_count(book_soup: bs4.BeautifulSoup) -> int:
@@ -185,3 +223,13 @@ def get_book_info(book_link: str) -> (str, float, int, int,):
     """
     soup = get_book_soup(book_link)
     return [get_title(soup), get_author(soup), get_rating(soup), get_rating_count(soup), get_genres(soup)]
+
+
+def main():
+    print(create_book_list(['https://www.goodreads.com/book/show/60495147-nine-liars',
+                            'https://www.goodreads.com/book/show/61169384-playing-hard-to-get']))
+
+
+# This block ensures that the main function is only executed when the script is run directly.
+if __name__ == "__main__":
+    main()
