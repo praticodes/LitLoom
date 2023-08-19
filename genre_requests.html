@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Genre Selection</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Select Book Genres</h1>
+        <form id="genreForm">
+            <fieldset>
+                <legend>Genres:</legend>
+                <!-- Generate checkboxes for each genre -->
+                <div class="checkbox-group">
+                                    <label><input type="checkbox" name="genres" value="Romance"> Romance</label>
+                <label><input type="checkbox" name="genres" value="Fiction"> Fiction</label>
+                <label><input type="checkbox" name="genres" value="Romance"> Romance</label>
+                <label><input type="checkbox" name="genres" value="Fiction"> Fiction</label>
+                <label><input type="checkbox" name="genres" value="Contemporary"> Contemporary</label>
+                <label><input type="checkbox" name="genres" value="Contemporary Romance"> Contemporary Romance</label>
+                <label><input type="checkbox" name="genres" value="Audiobook"> Audiobook</label>
+                <label><input type="checkbox" name="genres" value="Adult"> Adult</label>
+                <label><input type="checkbox" name="genres" value="Chick Lit"> Chick Lit</label>
+                <label><input type="checkbox" name="genres" value="Thriller"> Thriller</label>
+                <label><input type="checkbox" name="genres" value="Mystery"> Mystery</label>
+                <label><input type="checkbox" name="genres" value="Mystery Thriller"> Mystery Thriller</label>
+                <label><input type="checkbox" name="genres" value="Suspense"> Suspense</label>
+                <label><input type="checkbox" name="genres" value="Psychological Thriller"> Psychological Thriller</label>
+                <label><input type="checkbox" name="genres" value="Nonfiction"> Nonfiction</label>
+                <label><input type="checkbox" name="genres" value="Memoir"> Memoir</label>
+                <label><input type="checkbox" name="genres" value="Biography"> Biography</label>
+                <label><input type="checkbox" name="genres" value="Autobiography"> Autobiography</label>
+                <label><input type="checkbox" name="genres" value="Biography Memoir"> Biography Memoir</label>
+                <label><input type="checkbox" name="genres" value="LGBT"> LGBT</label>
+                <label><input type="checkbox" name="genres" value="Horror"> Horror</label>
+                <label><input type="checkbox" name="genres" value="Literary Fiction"> Literary Fiction</label>
+                <label><input type="checkbox" name="genres" value="Feminist"> Feminist</label>
+                <label><input type="checkbox" name="genres" value="African American"> African American</label>
+                <label><input type="checkbox" name="genres" value="Magical Realism"> Magical Realism</label>
+                <label><input type="checkbox" name="genres" value="Historical Fiction"> Historical Fiction</label>
+                <label><input type="checkbox" name="genres" value="Science Fiction"> Science Fiction</label>
+                <label><input type="checkbox" name="genres" value="Mental Health"> Mental Health</label>
+                <label><input type="checkbox" name="genres" value="Essays"> Essays</label>
+                <label><input type="checkbox" name="genres" value="Humor"> Humor</label>
+                <label><input type="checkbox" name="genres" value="Sports"> Sports</label>
+                <label><input type="checkbox" name="genres" value="Christmas"> Christmas</label>
+                <label><input type="checkbox" name="genres" value="South Asian"> Queer</label>
+                <label><input type="checkbox" name="genres" value="New Adult"> New Adult</label>
+                <label><input type="checkbox" name="genres" value="Gothic"> Gothic</label>
+                <label><input type="checkbox" name="genres" value="Classic"> Classic</label>
+                </div>
+            </fieldset>
+            <button type="button" onclick="submitForm()">Submit</button>
+        </form>
+    </div>
+
+    <script>
+        function submitForm() {
+            const selectedGenres = [];
+            const genreCheckboxes = document.querySelectorAll('input[name="genres"]:checked');
+
+            genreCheckboxes.forEach(checkbox => {
+                selectedGenres.push(checkbox.value);
+            });
+
+            // You can now send the selected genres to your server or perform any desired action
+            console.log('Selected genres:', selectedGenres);
+        }
+    </script>
+
+<div class="loading-overlay" id="loadingOverlay">
+    <div class="loading-spinner"></div>
+</div>
+
+<script src="script.js"></script>
+
+</body>
+</html>

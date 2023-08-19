@@ -63,11 +63,11 @@ def time_test(runs=100) -> None:
     - runs > 0
     - isinstance(runs, int)
     """
-    book_list = create_books_from_csv()
     genre_votes_dict = generate_random_genre_votes(runs)
     total_time_lpp = 0
     total_time_sort = 0
     for dictionary in genre_votes_dict:
+        book_list = create_books_from_csv()
         total_time_lpp += lpp_metrics(book_list, dictionary)
         total_time_sort += sort_metrics(book_list, dictionary)
     average_time_lpp = total_time_lpp / runs
@@ -77,8 +77,11 @@ def time_test(runs=100) -> None:
 
 
 def main():
-    time_test(10)
+    time_test(250)
+    # over 250 iterations, it was found that LPP was on average 26% faster
 
 
 if __name__ == "__main__":
     main()
+
+# TODO: Try with more linear constraints.

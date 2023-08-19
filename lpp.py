@@ -19,13 +19,19 @@ def get_recommendations_lpp(book_list: list[Book], genre_votes: dict[str: int], 
     model = LpProblem("Best_Books_Selection", LpMaximize)
     book_vars = LpVariable.dicts("Book", book_list, cat="Binary")
 
-    model += sum(book.get_combined_score(genre_votes) * book_vars[book] for book in book_list), "Total_Score_Objective"
+    total_score = sum(book.get_combined_score(genre_votes) * book_vars[book] for book in book_list)
+    model += total_score, "Total_Score_Objective"
     model += sum(book_vars[book] for book in book_list) == num_books, "Select_Num_Books"
+
+    books_with_high_ratings = [book for book in book_list if book.rating > 4]
+    warm_start_books = books_with_high_ratings[:num_books]
+    for book in warm_start_books:
+        book_vars[book].setInitialValue(1)
 
     model.solve()
 
-    top_books = [book for book in book_list if book_vars[book].value() == 1]
-    return top_books
+    selected_books = [book for book in book_list if book_vars[book].value() == 1]
+    return selected_books
 
 
 def get_recommendations_sort(book_list: list[Book], genre_votes: dict[str: int], num_books=10) -> list[Book]:
@@ -41,7 +47,13 @@ def get_recommendations_sort(book_list: list[Book], genre_votes: dict[str: int],
     sort_books_by_combined_score(book_list, genre_votes)
     return [book_list[-i] for i in range(0, num_books)]
 
-# TODO: Create master reccomendation function that does not need book_list and that uses date time to determine if csv file should be updated
+
+def get_recommendations() -> list[list]:
+    """Return a list of books and their information based on the faster LPP algorithm.
+    """
+    pass
+    # TODO: Create master reccomendation function that does not need book_list and that uses date time to determine if csv file should be updated
+
 # TODO: Get metrics for improvement by switching to LPP.
 # TODO: Create user system for submitting genre votes.
 # TODO: Create UI for the application.
