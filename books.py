@@ -1,15 +1,13 @@
 """This file contains the functions used to scrape publicly available data from various sites, in order
 to create Books, a custom class.
 """
-import ast
-from typing import Optional
-
 import bs4
 from bs4 import BeautifulSoup
 import requests
 import re
 from datetime import datetime
 import csv
+import math
 
 
 class Book:
@@ -27,14 +25,57 @@ class Book:
     def get_genre_score(self, genre_votes: dict[str: int]) -> float:
         """Gives the book a genre score and returns it, based on the genre votes dictionary.
         The genre score should be a number between 1 and 100
+        >>> books = create_books_from_csv()
+        >>> votes = {'Fiction': 4, 'Romance': 3, 'Feminism': 2, 'Horror': 1}
+        >>> books[17].get_genre_score(votes)
+        90.0
         """
         vote_count = sum(value for value in genre_votes.values())
         score = 0
         for genre in genre_votes:
             if genre in self.genres:
                 score += genre_votes[genre]
-
         return 100 * score / vote_count
+
+    def get_rating_score(self) -> float:
+        """Gives the inputted book an adjusted rating score based on its rating and rating count.
+        The rating score must be between 0 and 100.
+        >>> book_list = create_books_from_csv()
+        >>> book_list[17].get_rating_score()
+        31.99999998434544
+        """
+        advantage = self.rating - (1 / (math.exp(0.00003 * self.rating_count)) + 4)
+        max_advantage = 1
+        if advantage <= 0:
+            return 0.0
+        else:
+            return advantage * 100
+
+    def get_combined_score(self, genre_votes: dict[str: int]) -> float:
+        """Return the sum of the rating score and genre score
+        """
+        return self.get_genre_score(genre_votes) + self.get_rating_score()
+
+
+def genre_match(genre_votes: dict[str: int]) -> dict[str: float]:
+    """ Based on the genre_votes dictionary i.e. the votes on which genres reading group members want to read,
+    this function generates and returns a dictionary containing the percentage of members who like each genre.
+
+    >>> genre_votes_example = {'horror': 7, 'fantasy': 2, 'romance': 1}
+    >>> genre_match(genre_votes_example)
+    {'horror': 70.0, 'fantasy': 20.0, 'romance': 10.0}
+    """
+    vote_count = sum(value for value in genre_votes.values())
+    vote_percents = {key: 100 * genre_votes[key] / vote_count for key in genre_votes}
+    return vote_percents
+
+
+def get_genre_scores(books: list[Book]) -> dict[Book: float]:
+    """Gives each book a genre score and returns a dictionary of books and genre scores.
+    """
+    genre_scores = {}
+    for book in books:
+        genre_scores[book] = book.get_genre_score
 
 
 def create_books_from_csv() -> list[Book]:
@@ -54,6 +95,27 @@ def create_books_from_csv() -> list[Book]:
             books.append(book)
 
     return books
+
+
+def sort_books_by_combined_score(book_list: list[Book], genre_votes: dict[str: int]) -> None:
+    """
+    Sort the books by their combined score using insertion sort, given the genre votes.
+    >>> books = create_books_from_csv()
+    >>> votes = {'Fiction': 4, 'Romance': 3, 'Feminism': 2, 'Horror': 1, 'Thriller': 2}
+    >>> sort_books_by_combined_score(books, votes)
+    >>> all(books[i].get_combined_score(votes) <= books[i + 1].get_combined_score(votes) for i in range(0, len(books) - 2))
+    True
+    """
+    for i in range(1, len(book_list)):
+        current_book = book_list[i]
+        current_score = current_book.get_combined_score(genre_votes)
+
+        j = i - 1
+        while j >= 0 and current_score < book_list[j].get_combined_score(genre_votes):
+            book_list[j + 1] = book_list[j]
+            j -= 1
+
+        book_list[j + 1] = current_book
 
 
 def generate_popular_by_date_urls() -> list[str]:
@@ -305,10 +367,6 @@ def remove_invalid_entries() -> None:
 
 
 def main():
-    write_to_csv(get_book_info_mass(get_book_links(['https://www.goodreads.com/book/popular_by_date/2019/11',
-                                                    'https://www.goodreads.com/book/popular_by_date/2019/12',
-                                                    'https://www.goodreads.com/book/popular_by_date/2023/10'])),
-                 "book_info.csv")
     remove_invalid_entries()
 
 
