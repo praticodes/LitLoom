@@ -1,6 +1,7 @@
 """This file contains the functions used to scrape publicly available data from various sites, in order
 to create Books, a custom class.
 """
+import ast
 from typing import Optional
 
 import bs4
@@ -34,6 +35,25 @@ class Book:
                 score += genre_votes[genre]
 
         return 100 * score / vote_count
+
+
+def create_books_from_csv() -> list[Book]:
+    """
+    Return a list of book objectives from a csv file of books and their related information.
+    >>> book_list = create_books_from_csv()
+    >>> book_list[17].title
+    'Lessons in Chemistry'
+    """
+    books = []
+    with open('book_info.csv', 'r', newline='', encoding='utf-8') as csvfile:
+        csv_reader = csv.reader(csvfile)
+        next(csv_reader)
+        for row in csv_reader:
+            title, author, rating, rating_count, genres = row[0], row[1], float(row[2]), int(row[3]), eval(row[4])
+            book = Book(title, author, rating, rating_count, genres)
+            books.append(book)
+
+    return books
 
 
 def generate_popular_by_date_urls() -> list[str]:
@@ -256,10 +276,7 @@ def get_book_info(book_link: str) -> (str, float, int, int,):
 
 
 def get_book_info_mass(urls: list[str]) -> list[list]:
-    """
-
-    :param urls:
-    :return:
+    """ Return from a list of book links a list of lists in which each list contains a list of the book information for a different book.
     """
     book_list = []
     for url in urls:
@@ -288,12 +305,9 @@ def remove_invalid_entries() -> None:
 
 
 def main():
-    write_to_csv(get_book_info_mass(get_book_links(['https://www.goodreads.com/book/popular_by_date/2021/7',
-                                                    'https://www.goodreads.com/book/popular_by_date/2021/8',
-                                                    'https://www.goodreads.com/book/popular_by_date/2021/9',
-                                                    'https://www.goodreads.com/book/popular_by_date/2021/10',
-                                                    'https://www.goodreads.com/book/popular_by_date/2021/11',
-                                                    'https://www.goodreads.com/book/popular_by_date/2021/12'])),
+    write_to_csv(get_book_info_mass(get_book_links(['https://www.goodreads.com/book/popular_by_date/2019/11',
+                                                    'https://www.goodreads.com/book/popular_by_date/2019/12',
+                                                    'https://www.goodreads.com/book/popular_by_date/2023/10'])),
                  "book_info.csv")
     remove_invalid_entries()
 
