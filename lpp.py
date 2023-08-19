@@ -26,3 +26,18 @@ def get_recommendations_lpp(book_list: list[Book], genre_votes: dict[str: int], 
 
     top_books = [book for book in book_list if book_vars[book].value() == 1]
     return top_books
+
+
+def get_recommendations_sort(book_list: list[Book], genre_votes: dict[str: int], num_books=10) -> list[Book]:
+    """
+    Sorts book options to return a list of reccomended books
+    >>> books = create_books_from_csv()
+    >>> votes = {'Fiction': 4, 'Romance': 3, 'Feminism': 2, 'Horror': 1}
+    >>> reccomendations = get_recommendations_sort(books, votes)
+    >>> titles = [reccomendations[i].title for i in range(0, len(reccomendations))]
+    >>> titles
+    ['The Spanish Love Deception', 'Lessons in Chemistry', 'House of Sky and Breath', 'A Court of Silver Flames', 'A Shadow in the Ember', 'Reminders of Him', 'Rule of Wolves', 'Legendborn', 'Part of Your World', 'Chain of Iron']
+    """
+    sort_books_by_combined_score(book_list, genre_votes)
+    return [book_list[-i] for i in range(0, num_books)]
+
