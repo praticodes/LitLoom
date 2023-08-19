@@ -273,8 +273,29 @@ def write_to_csv(book_info_list, filename):
         csv_writer.writerows(book_info_list)  # Write book info
 
 
+def remove_invalid_entries() -> None:
+    """Remove entries from a csv file that start with 'Title Unavailable'
+    """
+    with open('book_info.csv', 'r', newline='', encoding='utf-8') as csvfile:
+        rows = list(csv.reader(csvfile))
+
+    with open('book_info.csv', 'w', newline='', encoding='utf-8') as csvfile:
+        csv_writer = csv.writer(csvfile)
+
+        for row in rows:
+            if row and not row[0].startswith('Title Unavailable'):
+                csv_writer.writerow(row)
+
+
 def main():
-    write_to_csv(get_book_info_mass(get_book_links(['https://www.goodreads.com/book/popular_by_date/2022/3'])), "book_info.csv")
+    write_to_csv(get_book_info_mass(get_book_links(['https://www.goodreads.com/book/popular_by_date/2021/7',
+                                                    'https://www.goodreads.com/book/popular_by_date/2021/8',
+                                                    'https://www.goodreads.com/book/popular_by_date/2021/9',
+                                                    'https://www.goodreads.com/book/popular_by_date/2021/10',
+                                                    'https://www.goodreads.com/book/popular_by_date/2021/11',
+                                                    'https://www.goodreads.com/book/popular_by_date/2021/12'])),
+                 "book_info.csv")
+    remove_invalid_entries()
 
 
 # This block ensures that the main function is only executed when the script is run directly.
