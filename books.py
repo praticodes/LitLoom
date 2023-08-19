@@ -8,6 +8,7 @@ from bs4 import BeautifulSoup
 import requests
 import re
 from datetime import datetime
+import csv
 
 
 class Book:
@@ -109,7 +110,8 @@ def create_book_list(book_links: list[str]) -> list[Book]:
     books = []
     for book_link in book_links:
         book = new_book(book_link)
-        books.append(book)
+        if book.rating > 0.0:
+            books.append(book)
 
     return books
 
@@ -247,14 +249,32 @@ def get_book_info(book_link: str) -> (str, float, int, int,):
     plus a sublist of relevant genres.
 
     >>> get_book_info("https://www.goodreads.com/book/show/61884987-hello-stranger")
-    ['Hello Stranger', 'Katherine Center', 4.09, 23857, ['Romance', 'Fiction', 'Contemporary', 'Contemporary Romance', 'Chick Lit', 'Audiobook', 'Adult']]
+    ['Hello Stranger', 'Katherine Center', 4.08, 24236, ['Romance', 'Fiction', 'Contemporary', 'Contemporary Romance', 'Chick Lit', 'Audiobook', 'Adult']]
     """
     soup = get_book_soup(book_link)
     return [get_title(soup), get_author(soup), get_rating(soup), get_rating_count(soup), get_genres(soup)]
 
 
+def get_book_info_mass(urls: list[str]) -> list[list]:
+    """
+
+    :param urls:
+    :return:
+    """
+    book_list = []
+    for url in urls:
+        book_list.append(get_book_info(url))
+    return book_list
+
+
+def write_to_csv(book_info_list, filename):
+    with open(filename, 'a', newline='', encoding='utf-8') as csvfile:
+        csv_writer = csv.writer(csvfile)
+        csv_writer.writerows(book_info_list)  # Write book info
+
+
 def main():
-    ...
+    write_to_csv(get_book_info_mass(get_book_links(['https://www.goodreads.com/book/popular_by_date/2022/3'])), "book_info.csv")
 
 
 # This block ensures that the main function is only executed when the script is run directly.
