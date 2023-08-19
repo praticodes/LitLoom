@@ -41,3 +41,7 @@ def get_recommendations_sort(book_list: list[Book], genre_votes: dict[str: int],
     sort_books_by_combined_score(book_list, genre_votes)
     return [book_list[-i] for i in range(0, num_books)]
 
+# TODO: Create master reccomendation function that does not need book_list and that uses date time to determine if csv file should be updated
+# TODO: Get metrics for improvement by switching to LPP.
+# TODO: Create user system for submitting genre votes.
+# TODO: Create UI for the application.
