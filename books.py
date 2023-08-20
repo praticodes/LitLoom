@@ -1,6 +1,8 @@
 """This file contains the functions used to scrape publicly available data from various sites, in order
 to create Books, a custom class.
 """
+from typing import Dict, Callable
+
 import bs4
 from bs4 import BeautifulSoup
 import requests
@@ -22,7 +24,7 @@ class Book:
         self.rating_count = rating_count
         self.genres = genres
 
-    def get_genre_score(self, genre_votes: dict[str: int]) -> float:
+    def get_genre_score(self, genre_votes: dict[str, int]) -> float:
         """Gives the book a genre score and returns it, based on the genre votes dictionary.
         The genre score should be a number between 1 and 100
         >>> books = create_books_from_csv()
@@ -51,13 +53,13 @@ class Book:
         else:
             return advantage * 100
 
-    def get_combined_score(self, genre_votes: dict[str: int]) -> float:
+    def get_combined_score(self, genre_votes: dict[str, int]) -> float:
         """Return the sum of the rating score and genre score
         """
         return self.get_genre_score(genre_votes) + self.get_rating_score()
 
 
-def genre_match(genre_votes: dict[str: int]) -> dict[str: float]:
+def genre_match(genre_votes: dict[str, int]) -> dict[str, float]:
     """ Based on the genre_votes dictionary i.e. the votes on which genres reading group members want to read,
     this function generates and returns a dictionary containing the percentage of members who like each genre.
 
@@ -70,12 +72,13 @@ def genre_match(genre_votes: dict[str: int]) -> dict[str: float]:
     return vote_percents
 
 
-def get_genre_scores(books: list[Book]) -> dict[Book: float]:
+def get_genre_scores(books: list[Book]) -> dict[Book, Callable[[dict[str, int]], float]]:
     """Gives each book a genre score and returns a dictionary of books and genre scores.
     """
     genre_scores = {}
     for book in books:
         genre_scores[book] = book.get_genre_score
+    return genre_scores
 
 
 def create_books_from_csv() -> list[Book]:
@@ -97,7 +100,7 @@ def create_books_from_csv() -> list[Book]:
     return books
 
 
-def sort_books_by_combined_score(book_list: list[Book], genre_votes: dict[str: int]) -> None:
+def sort_books_by_combined_score(book_list: list[Book], genre_votes: dict[str, int]) -> None:
     """
     Sort the books by their combined score using insertion sort, given the genre votes.
     >>> books = create_books_from_csv()

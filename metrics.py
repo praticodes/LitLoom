@@ -6,7 +6,7 @@ from lpp import get_recommendations_lpp, get_recommendations_sort
 from books import Book, create_books_from_csv
 
 
-def generate_random_genre_votes(count=100) -> list[dict[str: int]]:
+def generate_random_genre_votes(count=100) -> list[dict[str, int]]:
     """
     Generates random genre vote dictionaries.
     >>> generate_random_genre_votes()
@@ -30,7 +30,7 @@ def generate_random_genre_votes(count=100) -> list[dict[str: int]]:
     return dictionaries
 
 
-def lpp_metrics(book_list: list[Book], genre_votes: dict[str: int]):
+def lpp_metrics(book_list: list[Book], genre_votes: dict[str, int]):
     """Measure metrics for the LPP-based algorithm
     """
     start_time = time.time()
@@ -43,7 +43,7 @@ def lpp_metrics(book_list: list[Book], genre_votes: dict[str: int]):
     return elapsed_time
 
 
-def sort_metrics(book_list: list[Book], genre_votes: dict[str: int]):
+def sort_metrics(book_list: list[Book], genre_votes: dict[str, int]):
     """Measure metrics for the sorting-based algorithm
     """
     start_time = time.time()

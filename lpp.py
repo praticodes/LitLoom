@@ -6,7 +6,7 @@ from pulp import LpMaximize, LpProblem, LpVariable
 from books import Book, create_books_from_csv, sort_books_by_combined_score
 
 
-def get_recommendations_lpp(book_list: list[Book], genre_votes: dict[str: int], num_books=10) -> list[Book]:
+def get_recommendations_lpp(book_list: list[Book], genre_votes: dict[str, int], num_books=10) -> list[Book]:
     """
     Solves a linear programming problem to return a list of reccomended books.
     >>> books = create_books_from_csv()
@@ -34,7 +34,7 @@ def get_recommendations_lpp(book_list: list[Book], genre_votes: dict[str: int], 
     return selected_books
 
 
-def get_recommendations_sort(book_list: list[Book], genre_votes: dict[str: int], num_books=10) -> list[Book]:
+def get_recommendations_sort(book_list: list[Book], genre_votes: dict[str, int], num_books=10) -> list[Book]:
     """
     Sorts book options to return a list of reccomended books
     >>> books = create_books_from_csv()
