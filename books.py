@@ -24,7 +24,7 @@ class Book:
         self.rating_count = rating_count
         self.genres = genres
 
-    def get_genre_score(self, genre_votes: dict[str, int]) -> float:
+    def get_genre_score(self, genre_votes):
         """Gives the book a genre score and returns it, based on the genre votes dictionary.
         The genre score should be a number between 1 and 100
         >>> books = create_books_from_csv()
