@@ -48,11 +48,17 @@ def get_recommendations_sort(book_list: list[Book], genre_votes: dict[str: int],
     return [book_list[-i] for i in range(0, num_books)]
 
 
-def get_recommendations() -> list[list]:
+def get_recommendations(selected_genres: list[str]) -> list[str]:
     """Return a list of books and their information based on the faster LPP algorithm.
+    >>> get_recommendations(['Romance', 'Feminism'])
+    ["'Lessons in Chemistry' by Bonnie Garmus", "'Part of Your World' by Abby Jimenez", "'House of Sky and Breath' by Sarah J. Maas", "'Reminders of Him' by Colleen Hoover", "'Heartstopper: Volume Four' by Alice Oseman", "'A Court of Silver Flames' by Sarah J. Maas", "'Rule of Wolves' by Leigh Bardugo", "'Chain of Iron' by Cassandra Clare", "'A Shadow in the Ember' by Jennifer L. Armentrout"]
     """
-    pass
-    # TODO: Create master reccomendation function that does not need book_list and that uses date time to determine if csv file should be updated
+    books = create_books_from_csv()
+    genres_dict = {selected_genre: 1 for selected_genre in selected_genres}
+    recommendations = get_recommendations_lpp(books, genres_dict)
+    refined = [f"'{recommendations[i].title}' by {recommendations[i].author}" for i in range(0, 9)]
+    return refined
+
 
 # TODO: Get metrics for improvement by switching to LPP.
 # TODO: Create user system for submitting genre votes.

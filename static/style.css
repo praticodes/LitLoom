@@ -70,6 +70,44 @@ button:hover {
     background-color: #4ECDC4;
 }
 
+.container {
+    width: 100%;
+    max-width: 600px;
+    padding: 20px;
+    box-sizing: border-box;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.recommended-books-title {
+    font-size: 24px;
+    color: #292F36;
+    margin-bottom: 20px;
+}
+
+.recommended-books {
+    list-style: none;
+    padding: 0;
+    text-align: left;
+}
+
+.recommended-books li {
+    font-size: 18px;
+    color: #444;
+    margin-bottom: 10px;
+    padding-left: 20px;
+    position: relative;
+}
+
+.recommended-books li:before {
+    content: "•";
+    position: absolute;
+    left: 0;
+    color: #4ECDC4;
+}
+
+
+
 /* Style the loading overlay */
 .loading-overlay {
     display: none;

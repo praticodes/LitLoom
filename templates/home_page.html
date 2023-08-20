@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='landing.css') }}">
+    <title>Home Page</title>
+</head>
+<body>
+    <h1>Welcome to LitLoom!</h1>
+    <p>Click the button below to get diverse book recommendations based on ratings and your genre preferences.</p>
+    <a href="{{ url_for('select_genres') }}" class="launch-button">Launch</a>
+</body>
+</html>

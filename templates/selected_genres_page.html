@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Selected Genres</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1 class="recommended-books-title">Recommended Books:</h1>
+        <ul class="recommended-books">
+            {% for book in books %}
+                <li>{{ book }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+</body>
+</html>
